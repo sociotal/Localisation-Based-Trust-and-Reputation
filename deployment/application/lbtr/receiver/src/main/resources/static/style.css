@@ -1,0 +1,102 @@
+body:fullscreen {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+}
+
+body:-webkit-full-screen {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+body:-moz-full-screen {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    height: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: sans-serif;
+    position: relative;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-weight: normal;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    font-size: 3.5em;
+    line-height: 160px;
+    height: 160px;
+    border-bottom: 1px solid #333;
+    background-color: #3F51B5;
+    color: white;
+}
+
+#mapimg, #map {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 160px;
+    text-align: center;
+    padding: 60px;
+}
+
+#mapimg > img {
+    height: 100%;
+}
+
+#map > svg {
+    display: block;
+}
+
+#btn-clear {
+    position: absolute;
+    display: block;
+    top: 0;
+    right: 0;
+    border: 1px solid white;
+    border-radius: 100%;
+    margin: .5em;
+    padding: .2em;
+    height: 1.5em;
+    width: 1.5em;
+    outline: none;
+    background: transparent;
+    font: inherit;
+    color: white;
+    font-size: 1em;
+    line-height: 1;
+    text-align: center;
+}
+
+#btn-clear:disabled {
+    color: #333;
+    border-color: #333;
+}
+
+.anchor text {
+    font-size: .8em;
+}
+
+.mobile text {
+    font-size: .9em;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <service id="store" interface="lsoc.gateway.standalone.store.Store">
+        <bean class="lsoc.gateway.standalone.store.sqlite.SqliteStoreImpl" init-method="start"/>
+    </service>
+</blueprint>

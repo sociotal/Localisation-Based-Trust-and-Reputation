@@ -1,0 +1,65 @@
+# Deploying Karaf and Gateway (standalone)
+
+## Karaf installation
+
+### Debian dependencies
+
+- `openjdk-7-jre-headless`
+
+### Unpacking Karaf
+
+    $ wget http://apache.crihan.fr/dist/karaf/4.0.4/apache-karaf-4.0.4.tar.gz
+    $ tar xvf apache-karaf-4.0.4.tar.gz
+
+### SSH access
+
+- In `etc/org.apache.karaf.shell.cfg`, set `sshPort` and `sshHost`.
+- In `etc/keys.properties`, add a line with the public key, eg.:
+
+        karaf={public key in one line},_g_:admingroup
+
+### Auto-starting (systemd service)
+
+Adapt the `JAVA_HOME`, `WorkingDirectory` and `karaf` binary paths.
+
+```ini
+[Unit]
+Description=Apache Karaf container
+After=network.target
+
+[Service]
+User=user
+Group=user
+WorkingDirectory=/home/user/apache-karaf-4.0.4
+Environment=JAVA_DEBUG_PORT=9005 JAVA_HOME=/usr/lib/jvm/jdk-7-oracle-arm-vfp-hflt/jre
+ExecStart=/home/user/apache-karaf-4.0.4/bin/karaf
+TimeoutStopSec=20s
+
+[Install]
+WantedBy=multi-user.target
+```
+
+## Gateway OSGi dependencies
+
+### Karaf features
+
+Add the `cxf` repo first:
+
+    $ features:add-repo cxf 3.1.4
+
+Then install the needed features:
+
+    $ features:install cxf-jaxrs cxf-http-jetty
+
+### Maven bundles
+
+    $ bundle:install \
+        mvn:com.fasterxml.jackson.core/jackson-core \
+        mvn:com.fasterxml.jackson.core/jackson-annotations \
+        mvn:com.fasterxml.jackson.core/jackson-databind \
+        mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base \
+        mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider \
+        mvn:org.apache.httpcomponents/httpcore-osgi \
+        mvn:org.apache.httpcomponents/httpclient-osgi \
+        mvn:com.eclipsesource.jaxrs/consumer \
+        mvn:com.eclipsesource.jaxrs/jersey-all

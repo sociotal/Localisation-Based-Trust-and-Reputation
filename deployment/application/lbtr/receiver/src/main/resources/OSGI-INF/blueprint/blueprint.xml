@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd"
+           default-activation="eager">
+    <reference id="storeRef" interface="lsoc.gateway.standalone.store.Store"/>
+
+    <cm:property-placeholder persistent-id="lsoc.gateway.standalone.lbtr.receiver" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="listenAddress" value="::"/>
+            <cm:property name="listenPort" value="9009"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
+
+    <!-- Actual app -->
+    <bean id="rootServlet" class="lsoc.gateway.standalone.lbtr.receiver.LocDemoServlet">
+        <property name="alias" value="/locdemo/app"/>
+        <property name="receiver" ref="receiver"/>
+    </bean>
+    <service id="rootServletService" ref="rootServlet" interface="javax.servlet.Servlet">
+        <service-properties>
+            <entry key="alias" value="/locdemo/app"/>
+        </service-properties>
+    </service>
+
+    <!-- Statics -->
+    <service id="defaultResourceService" interface="org.ops4j.pax.web.extender.whiteboard.ResourceMapping">
+        <bean class="org.ops4j.pax.web.extender.whiteboard.runtime.DefaultResourceMapping">
+            <property name="alias" value="/locdemo"/>
+            <property name="path" value=""/>
+        </bean>
+    </service>
+
+    <!-- Index -->
+    <bean id="welcomeFile"
+          class="org.ops4j.pax.web.extender.whiteboard.runtime.DefaultWelcomeFileMapping">
+        <property name="redirect" value="true" />
+        <property name="welcomeFiles">
+            <array>
+                <value>index.html</value>
+            </array>
+        </property>
+    </bean>
+
+    <service id="welcomeFileService" ref="welcomeFile"
+             interface="org.ops4j.pax.web.extender.whiteboard.WelcomeFileMapping" />
+
+    <bean class="lsoc.gateway.standalone.lbtr.receiver.Receiver" init-method="start" destroy-method="stop" id="receiver">
+        <property name="store" ref="storeRef"/>
+        <property name="listenAddress" value="${listenAddress}"/>
+        <property name="listenPort" value="${listenPort}"/>
+    </bean>
+</blueprint>

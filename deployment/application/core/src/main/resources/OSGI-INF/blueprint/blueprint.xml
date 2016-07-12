@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+              http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd"
+           default-activation="eager">
+
+    <jaxrs:server address="http://0.0.0.0:9000/" id="core-auth-service-server">
+        <jaxrs:serviceBeans>
+            <ref component-id="core-auth-service"/>
+        </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
+            <!-- request filter (authentication/authorization) would be here -->
+        </jaxrs:providers>
+    </jaxrs:server>
+
+    <reference id="store" interface="lsoc.gateway.standalone.store.Store"/>
+
+    <bean id="core-auth-service" class="lsoc.gateway.standalone.core.RestService">
+        <property name="store" ref="store"/>
+    </bean>
+
+    <bean id="core-gw" class="lsoc.gateway.standalone.core.GatewayCore" init-method="start" destroy-method="stop">
+        <property name="store" ref="store"/>
+    </bean>
+</blueprint>
